@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package protobuf;
+
+option go_package = "./;protobufpb";
+import "google/protobuf/timestamp.proto";
+
+service Book{
+  rpc CreateBook(CreateBookReq) returns (CreateBookRes);
+  rpc UpdateBook(UpdateBookReq) returns (UpdateBookRes);
+  rpc DeleteBook(DeleteBookReq) returns (DeleteBookRes);
+  rpc GetBook(GetBookReq) returns (GetBookRes);
+}
+message BookInfo {
+  string id = 1 ;
+  string name = 2 ;
+  string author = 3 ;
+  string category = 4 ;
+  string description = 5;
+  uint32 quality = 6;
+  string language = 7;
+  uint32 price = 8;
+}
+message CreateBookReq{
+  string name = 1;
+  string category = 2;
+  string description =3 ;
+  string author = 4 ;
+  uint32 quality = 5;
+  string language = 6;
+  uint32 price = 7;
+}
+message UpdateBookReq{
+  BookInfo bookInfo = 1;
+}
+message DeleteBookReq{
+  BookInfo filter = 1;
+}
+message GetBookReq{
+  BookInfo filter = 1;
+}
+
+message CreateBookRes {bool success = 1 ;}
+message UpdateBookRes {BookInfo successBook = 1 ;}
+message DeleteBookRes {bool success = 1 ;}
+message GetBookRes {BookInfo bookInfo = 1 ;}

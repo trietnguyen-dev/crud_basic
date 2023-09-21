@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package protobuf;
+option go_package = "./;protobufpb";
+import "google/protobuf/timestamp.proto";
+
+service UserSrv{
+
+  rpc RegisterUser(RegisterUserReq) returns (RegisterUserRes){}
+  rpc LoginUser(LoginUserReq) returns (LoginUserRes){}
+  rpc GetInfoUser(GetInfoUserReq) returns (GetInfoUserRes){}
+  rpc UpdateUser(UpdateUserReq) returns (UpdateUserRes) {}
+}
+
+message UserInfo{
+  string full_name = 1;
+  string email = 2;
+  string phone_number = 3;
+}
+
+message RegisterUserReq{
+  string full_name = 1;
+  string email = 2;
+  string password = 3;
+  string re_password = 4;
+  string phone_number = 5;
+
+}
+
+message LoginUserReq{
+  string email = 1;
+  string password = 2;
+}
+
+message GetInfoUserReq{
+  UserInfo filter = 1 ;
+}
+
+message UpdateUserReq{
+  string id = 1 ;
+  string full_name = 2 ;
+  string email = 3 ;
+  string phone_number = 4 ;
+}
+
+message RegisterUserRes {bool success = 1 ;}
+message LoginUserRes {bool success  = 1 ;}
+message GetInfoUserRes {UserInfo userInfo = 1 ;}
+message UpdateUserRes {UserInfo userInfo = 1 ;}

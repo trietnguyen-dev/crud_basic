@@ -71,7 +71,6 @@ func (s *UserScv) RegisterUser(req *pb.RegisterUserReq) (*pb.RegisterUserRes, er
 	// Trả về phản hồi thành công
 	return &pb.RegisterUserRes{Success: true}, nil
 }
-
 func (s *UserScv) LoginUser(req *pb.LoginUserReq) (*pb.LoginUserRes, error) {
 	// Kiểm tra sự tồn tại của tài khoản dựa trên email
 	emailCondition := bson.D{{"email", req.GetEmail()}}
@@ -131,13 +130,26 @@ func (s *UserScv) UpdateUser(req *pb.UpdateUserReq) (*pb.UpdateUserRes, error) {
 	// Chuyển đổi chuỗi userIdStr thành ObjectID
 	userId, err := primitive.ObjectIDFromHex(userIdStr)
 
+	formatEmail, err := mail.ParseAddress(req.GetEmail())
 	if err != nil {
-		return nil, err // Xử lý lỗi nếu userIdStr không hợp lệ
+		return nil, err
 	}
+
+	email := formatEmail.Address
+
+	if err != nil {
+		return nil, err
+	}
+	isPhoneNumber := helpers.IsValidPhoneNumber(req.GetPhoneNumber())
+
+	if !isPhoneNumber {
+		return nil, status.Errorf(codes.InvalidArgument, "phone number invalid")
+	}
+
 	updatedUser := map[string]interface{}{
 		"full_name":    req.GetFullName(),
 		"phone_number": req.GetPhoneNumber(),
-		"email":        req.GetEmail(),
+		"email":        email,
 		"updated_at":   time.Now(),
 	}
 
